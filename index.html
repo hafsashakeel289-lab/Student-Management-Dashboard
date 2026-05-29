@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduTrack — Student Management</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Google Fonts: Syne (display) + DM Sans (body) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet" />
+  <!-- Phosphor Icons (CDN) -->
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js"></script>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════ LOADING SCREEN ═══ -->
+  <div id="loadingScreen" class="loading-screen">
+    <div class="loader-content">
+      <div class="loader-logo">
+        <span class="logo-icon"><i class="ph-duotone ph-graduation-cap"></i></span>
+        <span class="logo-text">EduTrack</span>
+      </div>
+      <div class="loader-bar-wrap"><div class="loader-bar"></div></div>
+      <p class="loader-label">Loading your workspace…</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ LOGIN PAGE ════════ -->
+  <div id="loginPage" class="login-page hidden">
+    <div class="login-bg">
+      <div class="login-blob b1"></div>
+      <div class="login-blob b2"></div>
+      <div class="login-blob b3"></div>
+    </div>
+    <div class="login-card">
+      <div class="login-header">
+        <div class="login-logo">
+          <i class="ph-duotone ph-graduation-cap"></i>
+        </div>
+        <h1>EduTrack</h1>
+        <p>Student Management System</p>
+      </div>
+      <div class="login-form">
+        <div class="form-group">
+          <label for="loginEmail">Email Address</label>
+          <div class="input-icon-wrap">
+            <i class="ph ph-envelope input-icon"></i>
+            <input type="email" id="loginEmail" placeholder="hafsashakeel245@gmail.com" />
+          </div>
+          <span class="field-error" id="emailError"></span>
+        </div>
+        <div class="form-group">
+          <label for="loginPassword">Password</label>
+          <div class="input-icon-wrap">
+            <i class="ph ph-lock input-icon"></i>
+            <input type="password" id="loginPassword" placeholder="••••••••" />
+            <button class="toggle-pw" id="togglePw" type="button">
+              <i class="ph ph-eye" id="pwEyeIcon"></i>
+            </button>
+          </div>
+          <span class="field-error" id="pwError"></span>
+        </div>
+        <div class="login-row">
+          <label class="checkbox-label">
+            <input type="checkbox" id="rememberMe" />
+            <span class="checkmark"></span>
+            Remember me
+          </label>
+          <a href="#" class="forgot-link">Forgot password?</a>
+        </div>
+        <button class="btn-login" id="loginBtn">
+          <span>Sign In</span>
+          <i class="ph ph-arrow-right"></i>
+        </button>
+        <p class="login-hint">Demo: <strong>hafsashakeel245@gmail.com</strong> / <strong>admin123</strong></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ MAIN APP ══════════ -->
+  <div id="appWrapper" class="app-wrapper hidden">
+
+    <!-- ───────────────── SIDEBAR ───────────────── -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <i class="ph-duotone ph-graduation-cap"></i>
+          <span class="logo-label">EduTrack</span>
+        </div>
+        <button class="sidebar-collapse-btn" id="sidebarCollapseBtn">
+          <i class="ph ph-sidebar-simple"></i>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <span class="nav-section-label">MAIN</span>
+        <a href="#" class="nav-item active" data-section="dashboard">
+          <i class="ph-duotone ph-house"></i>
+          <span>Dashboard</span>
+        </a>
+        <a href="#" class="nav-item" data-section="students">
+          <i class="ph-duotone ph-users"></i>
+          <span>Students</span>
+          <span class="nav-badge" id="navStudentCount">0</span>
+        </a>
+        <a href="#" class="nav-item" data-section="courses">
+          <i class="ph-duotone ph-books"></i>
+          <span>Courses</span>
+        </a>
+
+        <span class="nav-section-label">TOOLS</span>
+        <a href="#" class="nav-item" id="exportBtn">
+          <i class="ph-duotone ph-export"></i>
+          <span>Export JSON</span>
+        </a>
+        <a href="#" class="nav-item" id="logoutNavBtn">
+          <i class="ph-duotone ph-sign-out"></i>
+          <span>Logout</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="sidebar-user">
+          <div class="s-avatar">A</div>
+          <div class="s-user-info">
+            <span class="s-name">Admin</span>
+            <span class="s-role">Administrator</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ───────────────── MAIN CONTENT ──────────── -->
+    <div class="main-area" id="mainArea">
+
+      <!-- TOP NAVBAR -->
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="mobile-menu-btn" id="mobileMenuBtn">
+            <i class="ph ph-list"></i>
+          </button>
+          <div class="topbar-breadcrumb">
+            <span id="pageTitle">Dashboard</span>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <div class="search-wrap" id="topSearchWrap">
+            <i class="ph ph-magnifying-glass search-icon"></i>
+            <input type="text" id="globalSearch" placeholder="Search students…" />
+          </div>
+          <button class="icon-btn" id="themeToggleBtn" title="Toggle theme">
+            <i class="ph ph-moon" id="themeIcon"></i>
+          </button>
+          <button class="icon-btn notif-btn">
+            <i class="ph ph-bell"></i>
+            <span class="notif-dot"></span>
+          </button>
+          <div class="topbar-avatar">A</div>
+        </div>
+      </header>
+
+      <!-- CONTENT SECTIONS -->
+      <main class="content-area">
+
+        <!-- ── DASHBOARD SECTION ── -->
+        <section id="dashboardSection" class="section active">
+          <div class="section-hero">
+            <div>
+              <h2 class="section-title">Good morning, Admin 👋</h2>
+              <p class="section-sub">Here's what's happening at your institution today.</p>
+            </div>
+            <button class="btn-primary" id="dashAddStudentBtn">
+              <i class="ph ph-plus"></i> Add Student
+            </button>
+          </div>
+
+          <!-- STAT CARDS -->
+          <div class="stats-grid">
+            <div class="stat-card" data-color="indigo">
+              <div class="stat-icon"><i class="ph-duotone ph-users-three"></i></div>
+              <div class="stat-info">
+                <span class="stat-label">Total Students</span>
+                <span class="stat-value" id="statTotal">0</span>
+                <span class="stat-change up"><i class="ph ph-trend-up"></i> Live count</span>
+              </div>
+            </div>
+            <div class="stat-card" data-color="teal">
+              <div class="stat-icon"><i class="ph-duotone ph-books"></i></div>
+              <div class="stat-info">
+                <span class="stat-label">Total Courses</span>
+                <span class="stat-value" id="statCourses">0</span>
+                <span class="stat-change neutral"><i class="ph ph-circles-four"></i> Unique programs</span>
+              </div>
+            </div>
+            <div class="stat-card" data-color="emerald">
+              <div class="stat-icon"><i class="ph-duotone ph-check-circle"></i></div>
+              <div class="stat-info">
+                <span class="stat-label">Active Students</span>
+                <span class="stat-value" id="statActive">0</span>
+                <span class="stat-change up"><i class="ph ph-trend-up"></i> Currently enrolled</span>
+              </div>
+            </div>
+            <div class="stat-card" data-color="amber">
+              <div class="stat-icon"><i class="ph-duotone ph-calendar-plus"></i></div>
+              <div class="stat-info">
+                <span class="stat-label">Recently Added</span>
+                <span class="stat-value" id="statRecent">0</span>
+                <span class="stat-change neutral"><i class="ph ph-clock"></i> Last 7 days</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- RECENT STUDENTS TABLE (mini) -->
+          <div class="card mt-24">
+            <div class="card-header">
+              <h3>Recent Students</h3>
+              <a href="#" class="card-link" data-section="students">View all →</a>
+            </div>
+            <div class="table-wrapper">
+              <table class="data-table" id="recentTable">
+                <thead>
+                  <tr>
+                    <th>Student</th>
+                    <th>Course</th>
+                    <th>Enrolled</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="recentTableBody"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── STUDENTS SECTION ── -->
+        <section id="studentsSection" class="section">
+          <div class="section-hero">
+            <div>
+              <h2 class="section-title">Students</h2>
+              <p class="section-sub" id="studentCountLabel">Loading…</p>
+            </div>
+            <button class="btn-primary" id="openAddModalBtn">
+              <i class="ph ph-plus"></i> Add Student
+            </button>
+          </div>
+
+          <!-- FILTERS BAR -->
+          <div class="filters-bar">
+            <div class="search-wrap filter-search">
+              <i class="ph ph-magnifying-glass search-icon"></i>
+              <input type="text" id="tableSearch" placeholder="Search by name or course…" />
+            </div>
+            <select id="statusFilter" class="filter-select">
+              <option value="">All Status</option>
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+              <option value="On Leave">On Leave</option>
+            </select>
+            <select id="courseFilter" class="filter-select">
+              <option value="">All Courses</option>
+            </select>
+          </div>
+
+          <!-- STUDENTS TABLE -->
+          <div class="card">
+            <div class="table-wrapper">
+              <table class="data-table full-table" id="mainTable">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Student</th>
+                    <th>Age</th>
+                    <th>Course</th>
+                    <th>Email</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="mainTableBody"></tbody>
+              </table>
+              <!-- EMPTY STATE -->
+              <div class="empty-state hidden" id="emptyState">
+                <i class="ph-duotone ph-student"></i>
+                <h3>No students found</h3>
+                <p>Add your first student or adjust your search filters.</p>
+                <button class="btn-primary" id="emptyAddBtn">
+                  <i class="ph ph-plus"></i> Add Student
+                </button>
+              </div>
+            </div>
+            <!-- PAGINATION -->
+            <div class="pagination-wrap" id="paginationWrap">
+              <span class="page-info" id="pageInfo"></span>
+              <div class="page-btns">
+                <button class="page-btn" id="prevPageBtn"><i class="ph ph-caret-left"></i></button>
+                <div class="page-numbers" id="pageNumbers"></div>
+                <button class="page-btn" id="nextPageBtn"><i class="ph ph-caret-right"></i></button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── COURSES SECTION ── -->
+        <section id="coursesSection" class="section">
+          <div class="section-hero">
+            <div>
+              <h2 class="section-title">Courses</h2>
+              <p class="section-sub">Overview of all enrolled programs</p>
+            </div>
+          </div>
+          <div class="courses-grid" id="coursesGrid"></div>
+        </section>
+
+      </main>
+    </div><!-- /main-area -->
+  </div><!-- /appWrapper -->
+
+  <!-- ═══════════════════════════════════════ MOBILE OVERLAY ════ -->
+  <div class="sidebar-overlay hidden" id="sidebarOverlay"></div>
+
+  <!-- ═══════════════════════════════════════ ADD/EDIT MODAL ════ -->
+  <div class="modal-overlay hidden" id="studentModalOverlay">
+    <div class="modal student-modal" id="studentModal">
+      <div class="modal-header">
+        <h3 id="modalTitle">Add Student</h3>
+        <button class="modal-close" id="closeStudentModal"><i class="ph ph-x"></i></button>
+      </div>
+      <div class="modal-body">
+        <form id="studentForm" novalidate>
+          <input type="hidden" id="studentId" />
+          <div class="form-grid">
+            <!-- Row 1 -->
+            <div class="form-group">
+              <label>Full Name *</label>
+              <input type="text" id="fName" placeholder="e.g. Sara Ahmed" />
+              <span class="field-error" id="fNameErr"></span>
+            </div>
+            <div class="form-group">
+              <label>Age *</label>
+              <input type="number" id="fAge" placeholder="e.g. 21" min="16" max="60" />
+              <span class="field-error" id="fAgeErr"></span>
+            </div>
+            <!-- Row 2 -->
+            <div class="form-group">
+              <label>Email *</label>
+              <input type="email" id="fEmail" placeholder="student@example.com" />
+              <span class="field-error" id="fEmailErr"></span>
+            </div>
+            <div class="form-group">
+              <label>Phone *</label>
+              <input type="tel" id="fPhone" placeholder="+92 300 0000000" />
+              <span class="field-error" id="fPhoneErr"></span>
+            </div>
+            <!-- Row 3 -->
+            <div class="form-group">
+              <label>Course *</label>
+              <select id="fCourse">
+                <option value="">— Select Course —</option>
+                <option>Computer Science</option>
+                <option>Software Engineering</option>
+                <option>Data Science</option>
+                <option>Artificial Intelligence</option>
+                <option>Cybersecurity</option>
+                <option>Business Administration</option>
+                <option>Mechanical Engineering</option>
+                <option>Electrical Engineering</option>
+                <option>Graphic Design</option>
+                <option>Psychology</option>
+              </select>
+              <span class="field-error" id="fCourseErr"></span>
+            </div>
+            <div class="form-group">
+              <label>Status *</label>
+              <select id="fStatus">
+                <option value="">— Select Status —</option>
+                <option>Active</option>
+                <option>Inactive</option>
+                <option>On Leave</option>
+              </select>
+              <span class="field-error" id="fStatusErr"></span>
+            </div>
+            <!-- Row 4 -->
+            <div class="form-group full-col">
+              <label>Address</label>
+              <input type="text" id="fAddress" placeholder="Street, City, Country" />
+            </div>
+            <!-- Row 5 -->
+            <div class="form-group">
+              <label>Enrollment Date</label>
+              <input type="date" id="fEnrollDate" />
+            </div>
+            <div class="form-group">
+              <label>Profile Image URL</label>
+              <input type="url" id="fImgUrl" placeholder="https://…" />
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn-ghost" id="cancelStudentModal">Cancel</button>
+            <button type="submit" class="btn-primary" id="saveStudentBtn">
+              <i class="ph ph-floppy-disk"></i> Save Student
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ VIEW PROFILE MODAL ═ -->
+  <div class="modal-overlay hidden" id="profileModalOverlay">
+    <div class="modal profile-modal" id="profileModal">
+      <button class="modal-close floating-close" id="closeProfileModal"><i class="ph ph-x"></i></button>
+      <div class="profile-banner" id="profileBanner"></div>
+      <div class="profile-body">
+        <div class="profile-avatar-wrap">
+          <img src="" alt="Profile" id="profileAvatar" class="profile-avatar" />
+        </div>
+        <div class="profile-info">
+          <h2 id="profileName">—</h2>
+          <span class="profile-id" id="profileIdLabel">—</span>
+          <span class="profile-status-badge" id="profileStatusBadge">—</span>
+        </div>
+        <div class="profile-details-grid">
+          <div class="profile-detail">
+            <i class="ph-duotone ph-graduation-cap"></i>
+            <div><span class="pd-label">Course</span><span class="pd-value" id="profileCourse">—</span></div>
+          </div>
+          <div class="profile-detail">
+            <i class="ph-duotone ph-cake"></i>
+            <div><span class="pd-label">Age</span><span class="pd-value" id="profileAge">—</span></div>
+          </div>
+          <div class="profile-detail">
+            <i class="ph-duotone ph-envelope"></i>
+            <div><span class="pd-label">Email</span><span class="pd-value" id="profileEmail">—</span></div>
+          </div>
+          <div class="profile-detail">
+            <i class="ph-duotone ph-phone"></i>
+            <div><span class="pd-label">Phone</span><span class="pd-value" id="profilePhone">—</span></div>
+          </div>
+          <div class="profile-detail">
+            <i class="ph-duotone ph-map-pin"></i>
+            <div><span class="pd-label">Address</span><span class="pd-value" id="profileAddress">—</span></div>
+          </div>
+          <div class="profile-detail">
+            <i class="ph-duotone ph-calendar-check"></i>
+            <div><span class="pd-label">Enrolled</span><span class="pd-value" id="profileEnroll">—</span></div>
+          </div>
+        </div>
+        <div class="profile-actions">
+          <button class="btn-ghost" id="profileEditBtn"><i class="ph ph-pencil"></i> Edit</button>
+          <button class="btn-danger" id="profileDeleteBtn"><i class="ph ph-trash"></i> Delete</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════ TOAST CONTAINER ═══ -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="./script.js"></script>
+</body>
+</html>
